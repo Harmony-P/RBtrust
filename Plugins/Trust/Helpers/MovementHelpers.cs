@@ -24,7 +24,7 @@ namespace Trust.Helpers
     {
         public static readonly HashSet<uint> PartyMemberIds = new HashSet<uint>()
         {
-            729,  // Y'shtola       :: 雅·修特拉
+            729, // Y'shtola       :: 雅·修特拉
             1492, // Urianger       :: 于里昂热
             4130, // Alphinaud      :: 阿尔菲诺
             5239, // Alisaie        :: 阿莉塞
@@ -51,7 +51,7 @@ namespace Trust.Helpers
 
         public static readonly HashSet<uint> AllPartyDpsIds = new HashSet<uint>()
         {
-            729,  // Y'shtola       :: 雅·修特拉
+            729, // Y'shtola       :: 雅·修特拉
             //1492, // Urianger       :: 于里昂热
             //4130, // Alphinaud      :: 阿尔菲诺
             5239, // Alisaie        :: 阿莉塞
@@ -78,7 +78,7 @@ namespace Trust.Helpers
 
         public static readonly HashSet<uint> AllPartyTankIds = new HashSet<uint>()
         {
-            713,  // Thancred       :: 桑克瑞德
+            713, // Thancred       :: 桑克瑞德
             8650, // Crystal Exarch :: 水晶公
             11266, // Thancred's avatar
             11271, // G'raha Tia's avatar
@@ -87,7 +87,7 @@ namespace Trust.Helpers
 
         public static readonly HashSet<uint> AllPartyMemberIds = new HashSet<uint>()
         {
-            729,  // Y'shtola       :: 雅·修特拉
+            729, // Y'shtola       :: 雅·修特拉
             1492, // Urianger       :: 于里昂热
             4130, // Alphinaud      :: 阿尔菲诺
             5239, // Alisaie        :: 阿莉塞
@@ -106,7 +106,7 @@ namespace Trust.Helpers
             10898, // Emet-Selch
             10899, // Hythlodaeus
             9363, // G'raha Tia
-            713,  // Thancred       :: 桑克瑞德
+            713, // Thancred       :: 桑克瑞德
             8650, // Crystal Exarch :: 水晶公
             11266, // Thancred's avatar
             11271, // G'raha Tia's avatar
@@ -145,10 +145,7 @@ namespace Trust.Helpers
 
         private static readonly HashSet<ClassJobType> Healers = new HashSet<ClassJobType>()
         {
-           ClassJobType.Sage,
-           ClassJobType.Astrologian,
-           ClassJobType.WhiteMage,
-           ClassJobType.Scholar,
+            ClassJobType.Sage, ClassJobType.Astrologian, ClassJobType.WhiteMage, ClassJobType.Scholar,
         };
 
         private static readonly List<ClassJobType> Melee = new List<ClassJobType>
@@ -187,27 +184,32 @@ namespace Trust.Helpers
             .OrderBy(r => r.Distance())
             .FirstOrDefault();
 
-        public static BattleCharacter GetClosestMelee => GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
+        public static BattleCharacter GetClosestMelee => GameObjectManager
+            .GetObjectsOfType<BattleCharacter>(true, false)
             .Where(obj => !obj.IsDead && AllPartyMemberIds.Contains(obj.NpcId) && Melee.Contains(obj.CurrentJob))
             .OrderBy(r => r.Distance())
             .FirstOrDefault();
 
         public static Vector3 Vec = new Vector3("0,0,1");
+
         public static BattleCharacter GetClosestLocal(Vector3 vector)
         {
-            if (vector == null) return null;
+            if (vector == null)
+            {
+                return null;
+            }
 
             return GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-
-            .Where(obj => !obj.IsDead && PartyMemberIds.Contains(obj.NpcId))
-            .OrderBy(r => r.Distance(vector))
-            .FirstOrDefault();
+                .Where(obj => !obj.IsDead && PartyMemberIds.Contains(obj.NpcId))
+                .OrderBy(r => r.Distance(vector))
+                .FirstOrDefault();
         }
 
         /// <summary>
         /// Gets the furthest Ally from the Player.
         /// </summary>
-        public static BattleCharacter GetFurthestAlly => GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
+        public static BattleCharacter GetFurthestAlly => GameObjectManager
+            .GetObjectsOfType<BattleCharacter>(true, false)
             .Where(obj => !obj.IsDead && PartyMemberIds.Contains(obj.NpcId))
             .OrderByDescending(r => r.Distance())
             .FirstOrDefault();
@@ -222,7 +224,8 @@ namespace Trust.Helpers
 
         private static Vector3 PlayerLoc => Core.Player.Location;
 
-        public static async Task<bool> Spread(double TimeToSpread, float spreadDistance = 6.5f, bool IsSpreading = false, uint spbc = 0)
+        public static async Task<bool> Spread(double TimeToSpread, float spreadDistance = 6.5f,
+            bool IsSpreading = false, uint spbc = 0)
         {
             if (IsSpreading)
             {
@@ -238,24 +241,23 @@ namespace Trust.Helpers
             }
 
             //if (sidestepPlugin != null)
-            //    { 
+            //    {
             //        sidestepPlugin.Enabled = true;
             //    }
 
             if (!AvoidanceManager.IsRunningOutOfAvoid)
             {
-                foreach (var npc in PartyManager.AllMembers.Select(p => p.BattleCharacter).OrderByDescending(obj => Core.Player.Distance(obj)))
+                foreach (var npc in PartyManager.AllMembers.Select(p => p.BattleCharacter)
+                             .OrderByDescending(obj => Core.Player.Distance(obj)))
                 {
                     AvoidanceManager.AddAvoidObject<BattleCharacter>(
                         () => DateTime.Now.TimeOfDay.TotalMilliseconds <= EndMS,
                         radius: spreadDistance,
                         npc.ObjectId);
-
                 }
+
                 await Coroutine.Wait(300, () => AvoidanceManager.IsRunningOutOfAvoid);
-
             }
-
 
 
             if (!AvoidanceManager.IsRunningOutOfAvoid)
@@ -268,7 +270,8 @@ namespace Trust.Helpers
         }
 
 
-        public static async Task<bool> HalfSpread(double TimeToSpread, float spreadDistance = 6.5f, bool IsSpreading = false, uint spbc = 0)
+        public static async Task<bool> HalfSpread(double TimeToSpread, float spreadDistance = 6.5f,
+            bool IsSpreading = false, uint spbc = 0)
         {
             if (IsSpreading)
             {
@@ -280,7 +283,8 @@ namespace Trust.Helpers
 
             if (spbc != 0)
             {
-                var nobj = PartyManager.AllMembers.Select(pm => pm.BattleCharacter).OrderBy(obj => obj.Distance(Core.Player)).FirstOrDefault(obj => !obj.IsMe);
+                var nobj = PartyManager.AllMembers.Select(pm => pm.BattleCharacter)
+                    .OrderBy(obj => obj.Distance(Core.Player)).FirstOrDefault(obj => !obj.IsMe);
 
                 var st = Core.Player.CurrentTarget;
 
@@ -316,19 +320,19 @@ namespace Trust.Helpers
             }
 
             //if (sidestepPlugin != null)
-            //    { 
+            //    {
             //        sidestepPlugin.Enabled = true;
             //    }
 
             foreach (var npc in GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-                                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderByDescending(obj => Core.Player.Distance(obj)))
+                         .Where(obj => AllPartyMemberIds.Contains(obj.NpcId))
+                         .OrderByDescending(obj => Core.Player.Distance(obj)))
             {
                 AvoidanceManager.AddAvoidObject<BattleCharacter>(
                     () => DateTime.Now.TimeOfDay.TotalMilliseconds <= EndMS,
                     radius: spreadDistance,
                     npc.ObjectId);
                 await Coroutine.Yield();
-
             }
 
             if (!AvoidanceManager.IsRunningOutOfAvoid)
@@ -337,11 +341,11 @@ namespace Trust.Helpers
             }
 
 
-
             return true;
         }
 
-        public static async Task<bool> SpreadSp(double TimeToSpread, Vector3 vector, float spreadDistance = 6.5f, bool IsSpreading = false, uint spbc = 0)
+        public static async Task<bool> SpreadSp(double TimeToSpread, Vector3 vector, float spreadDistance = 6.5f,
+            bool IsSpreading = false, uint spbc = 0)
         {
             if (IsSpreading)
             {
@@ -357,12 +361,13 @@ namespace Trust.Helpers
             }
 
             //if (sidestepPlugin != null)
-            //    { 
+            //    {
             //        sidestepPlugin.Enabled = true;
             //    }
 
             var nobj = GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-                                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderBy(obj => obj.Distance(Core.Player)).FirstOrDefault();
+                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderBy(obj => obj.Distance(Core.Player))
+                .FirstOrDefault();
 
             float ls = 0;
             if (vector != null)
@@ -378,9 +383,9 @@ namespace Trust.Helpers
             }
 
 
-
             foreach (var npc in GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-                                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderByDescending(r => Core.Player.Distance()))
+                         .Where(obj => AllPartyMemberIds.Contains(obj.NpcId))
+                         .OrderByDescending(r => Core.Player.Distance()))
             {
                 AvoidanceManager.AddAvoidObject<BattleCharacter>(
                     () => DateTime.Now.TimeOfDay.TotalMilliseconds <= EndMS,
@@ -400,7 +405,8 @@ namespace Trust.Helpers
             return true;
         }
 
-        public static async Task<bool> SpreadSpLoc(double TimeToSpread, Vector3 vector, float spreadDistance = 6.5f, bool IsSpreading = false, uint spbc = 0)
+        public static async Task<bool> SpreadSpLoc(double TimeToSpread, Vector3 vector, float spreadDistance = 6.5f,
+            bool IsSpreading = false, uint spbc = 0)
         {
             if (IsSpreading)
             {
@@ -416,7 +422,7 @@ namespace Trust.Helpers
             }
 
             //if (sidestepPlugin != null)
-            //    { 
+            //    {
             //        sidestepPlugin.Enabled = true;
             //    }
 
@@ -424,13 +430,14 @@ namespace Trust.Helpers
             if (vector == null)
             {
                 vector = GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-                                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderBy(obj => obj.Distance(Core.Player)).FirstOrDefault().Location;
+                    .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderBy(obj => obj.Distance(Core.Player))
+                    .FirstOrDefault().Location;
             }
 
 
-
             foreach (var npc in GameObjectManager.GetObjectsOfType<BattleCharacter>(true, false)
-                                .Where(obj => AllPartyMemberIds.Contains(obj.NpcId)).OrderByDescending(r => Core.Player.Distance()))
+                         .Where(obj => AllPartyMemberIds.Contains(obj.NpcId))
+                         .OrderByDescending(r => Core.Player.Distance()))
             {
                 AvoidanceManager.AddAvoidObject<BattleCharacter>(
                     () => DateTime.Now.TimeOfDay.TotalMilliseconds <= EndMS,
@@ -450,6 +457,4 @@ namespace Trust.Helpers
             return true;
         }
     }
-
-
 }
